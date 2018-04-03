@@ -1,0 +1,19 @@
+pre_fastqc:
+ mem: 20
+ time: 1
+
+post_fastqc:
+ mem: 20
+ time: 1
+
+trim_galore:
+ time: 3
+ mem:  10
+
+dereplicate:
+ time: 30
+ mem: 10
+
+interleave:
+ time: 4
+ mem: 20
