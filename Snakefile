@@ -1,6 +1,7 @@
 '''
 Author: Jessica Ribado
-Aim: A simple wrapper for metagenomics QC using paired end reads. To use this pipeline, edit parameters in the config.yaml, and specify the proper path to config file in the submission script.
+Aim: A simple wrapper for metagenomics QC using paired end reads. To use this pipeline,
+edit parameters in the config.yaml, and specify the proper path to config file in the submission script.
 
 This program runs under the assumption samples are named:
 PREFIX_R1.fastq.gz and PREFIX_R2.fastq.gz.
@@ -17,14 +18,8 @@ This script will create the following folders:
 Run: snakemake --jobs 100
                 -latency-wait 60
                 --configfile config.json
-                --cluster \
-                "sbatch --account=asbhatt \
-                    	-J {params.job_name} \
-                        -t {params.max_time} \
-                        --mem={params.max_mem} \
-                        -n {threads} \
-                        -o {params.log_files}.log \
-                        -e {params.log_files}.error"
+				--cluster-config clusterconfig.json
+                --profile scg
 '''
 
 ################################################################################
@@ -64,10 +59,10 @@ rule pre_fastqc:
     input:  DATA_DIR + "{file}.fastq.gz"
     output: PROJECT_DIR + "/qc/00_qc_reports/pre_fastqc/{file}_fastqc.html"
     threads: 1
-    params: job_name = "pre_fastqc_{file}",
-            log_files = LOGS_DIR + "/pre_fastqc_{file}",
-            max_time = "00:15:00",
-            max_mem  = "20G"
+    log: LOGS_DIR + "/pre_fastqc_{file}",
+    resources:
+		time=0.25,
+        mem=20
     shell: """
        mkdir -p {PROJECT_DIR}/qc/00_qc_reports/pre_fastqc/
        module load java/latest
@@ -78,17 +73,18 @@ rule pre_fastqc:
 
 ################################################################################
 rule trim_galore:
-     input:  fwd = DATA_DIR+"{sample}_R1.fastq.gz",
-             rev = DATA_DIR+"{sample}_R2.fastq.gz"
-     output: fwd = PROJECT_DIR+"/qc/01_trimmed/{sample}_R1_val_1.fq.gz",
-             rev = PROJECT_DIR+"/qc/01_trimmed/{sample}_R2_val_2.fq.gz"
-     threads: 4
-     params: job_name  = "trimGalore_{sample}",
-             log_files = LOGS_DIR + "/trimGalore_{sample}",
-             max_time  = config['trim_galore']['max_time'],
-             max_mem   = config['trim_galore']['max_mem'],
-             adaptor   = config['trim_galore']['adaptors'],
-             q_min     = config['trim_galore']['quality']
+	input:  fwd = DATA_DIR+"{sample}_R1.fastq.gz",
+		rev = DATA_DIR+"{sample}_R2.fastq.gz"
+	output: fwd = PROJECT_DIR+"/qc/01_trimmed/{sample}_R1_val_1.fq.gz",
+		rev = PROJECT_DIR+"/qc/01_trimmed/{sample}_R2_val_2.fq.gz"
+	threads: 4
+    log: LOGS_DIR + "/trimGalore_{sample}",
+	resources:
+		time = config['trim_galore']['max_time'],
+		mem = config['trim_galore']['max_mem'],
+	params:
+		adaptor   = config['trim_galore']['adaptors'],
+        q_min     = config['trim_galore']['quality']
      benchmark: BENCH_DIR + "/trimGalore_{sample}.txt"
      shell: """
          mkdir -p {PROJECT_DIR}/qc/01_trimmed/

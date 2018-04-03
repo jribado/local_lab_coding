@@ -1,5 +1,5 @@
 # specify directories -- no slash at the end for the output dir
-raw_reads_directory: "/srv/gsfs0/projects/bhatt/ribado/tools/qc_snakemake/test_sequences/"
+raw_reads_directory: /srv/gsfs0/projects/bhatt/ribado/tools/qc_snakemake/test_sequences/
 output_directory: /srv/gsfs0/projects/bhatt/ribado/tools/qc_snakemake/test_output
 
 
