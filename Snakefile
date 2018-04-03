@@ -37,7 +37,6 @@ import os,re
 FILES = [f for f in os.listdir(DATA_DIR) if f.endswith('fastq.gz')]
 ALL_SAMPLES = list([i.split('.fastq.gz', 1)[0] for i in FILES])
 SAMPLES = list(set([i.split('_R', 1)[0] for i in FILES]))
-print(SAMPLES)
 # make log and benchmark directories
 if not os.path.exists(LOGS_DIR): os.makedirs(LOGS_DIR)
 if not os.path.exists(BENCH_DIR): os.makedirs(BENCH_DIR)
@@ -50,6 +49,7 @@ rule all:
     input:
         expand(PROJECT_DIR + "/qc/00_qc_reports/pre_fastqc/{file}_fastqc.html", file=ALL_SAMPLES),
         expand(PROJECT_DIR + "/qc/00_qc_reports/post_fastqc/{sample}_nodup_PE2_fastqc.html", sample=SAMPLES),
+        expand(PROJECT_DIR + "/qc/00_qc_reports/{qc}_multiqc_report.html", qc=['pre', 'post'])
         expand(PROJECT_DIR + "/qc/03_interleave/{sample}_trimmed_{mismatch}.extendedFrags.fastq",
         sample=SAMPLES, mismatch=config['interleave']['mismatch'])
 
