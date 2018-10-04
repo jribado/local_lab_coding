@@ -1,29 +1,17 @@
-raw_reads_directory: test_sequences2
-output_directory: test_output
-
-
+# specify directories
+raw_reads_directory: /srv/gsfs0/projects/bhatt/ribado/tools/qc_snakemake/test_sequences
+output_directory: /srv/gsfs0/projects/bhatt/ribado/tools/qc_snakemake/test_output
+trimgalore_directory: /srv/gsfs0/projects/bhatt/tools/moss_tools/qc/Super-Deduper
 # specify parameters for TrimGalore
-# No need to change anything except adaptors if unsure - if job fails due to memory or time, increase the values
 trim_galore:
-  # can specify either --illumina, --nextera or --small_rna as built in;
-  # alternative --adaptor [SEQUENCE] --adaptor2 [SEQUENCE]
   adaptors: illumina
   quality:  30
-
 # specify parameters for SuperDeduper
 dereplicate:
-  # starting location of or the starting base pair of the unique sequence ID. Program default 10.
   start_trim: 15
-  # The length of the base pairs in the unique sequence ID (the number. of base pairs in the unique ID). Program default 25
   unique_length: 90
-
-
 # specify parameters for FLASh
 interleave:
-  # minOverlap is the minimum required overlap length between two reads to provide a confident overlap. Default: 10bp.
   min_length: 25
-  # maxOverlap is the maximum overlap length expected in approximately 90% of read pairs. It is by default set to 70bp, which works well for 100bp reads generated from 180bp library (normal distribution of fragment lengths is assumed). Overlaps longer than maxOverlap are still considered as good overlaps, but the mismatch ratio (explained below) is calculated over the maxOverlap rather than the true overlap length. If you enter a value for maxOverlap, then the read length, fragment length and standard deviation of fragment lengths that you enter will be ignored for calculation of maxOverlap parameter. Default: 70bp.
   max_length: 70
-  length: 70
- # mismatchRatio is the maximum allowed ratio of the number of mismatches and the overlap length. An overlap with mismatch ratio higher than the set value is considered incorrect overlap and mates will not be merged. Any occurence of an "N" in any read is ignored and not counted towards the mismatches or overlap length. Default: 0.25.
   mismatch: 0.1
