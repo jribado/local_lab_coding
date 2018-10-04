@@ -30,4 +30,4 @@ Seqkit (Dereplicate PCR amplicons)
   - start_trim: Starting location of or the starting base pair of the unique sequence ID.
 
 Seqtk (Interleave)
-	- no parameters
+  - no parameters
